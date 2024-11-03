@@ -1,9 +1,11 @@
 import React from 'react'
+import { Routes, Route } from "react-router-dom"
 import styled from 'styled-components'
 
-import SheetsList from './Sheets'
-import SearchBar from './SearchBar'
 import Header from './Header'
+import Home from './Home'
+import SearchBar from './SearchBar'
+import Sheets from './Sheets'
 
 const Wrap = styled.div`
   position: relative;
@@ -29,7 +31,10 @@ const App = () => {
       <Content>
         <Header />
         <SearchBar />
-        <SheetsList />
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/sheets" element={<Sheets />} />
+        </Routes>
       </Content>
     </Wrap>
   )
