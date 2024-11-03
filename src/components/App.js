@@ -16,6 +16,7 @@ const Wrap = styled.div`
   display: flex;
   flex-flow: column;
   align-items: stretch;
+  background: #fff;
 `
 
 const Content = styled.div`
