@@ -1,5 +1,4 @@
 import React, { useContext } from "react"
-import { Link } from "react-router-dom"
 import styled from "styled-components"
 
 import { CatalogContext } from '../data/CatalogProvider'
