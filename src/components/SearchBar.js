@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useRef } from 'react'
-import { useSearchParams } from "react-router-dom"
+import { useLocation, useNavigate, useSearchParams, createSearchParams } from "react-router-dom"
 import styled from 'styled-components'
 
 import useAutoFocus from '../common/AutoFocus'
@@ -36,12 +36,17 @@ const SheetsCount = styled.div`
 
 const searchParam = "q"
 
+let lastChangeAt = null
+const minQuiteInterval = 3000
+
 const SearchBar = ({ autoFocus = true, autoSelect = true, autoScroll = false }) => {
 
   const { sheets, filteredSheets, setFilteredSheets } = useContext(CatalogContext)
   const searchSheets = useSearchEngine(sheets)
   const searchInput = useAutoFocus(autoFocus)
   const wrapRef = useRef()
+  const navigate = useNavigate()
+  const location = useLocation()
 
   const [queryParams, setQueryParams] = useSearchParams()
 
@@ -60,7 +65,17 @@ const SearchBar = ({ autoFocus = true, autoSelect = true, autoScroll = false }) 
   }, [queryParams, setFilteredSheets, searchSheets, autoScroll])
 
   const onInputChange = (event) => {
-    setQueryParams({ [searchParam]: event.target.value })
+    const queryParams = { [searchParam]: event.target.value }
+    if (location.pathname !== "/sheets" && event.target.value) {
+      navigate({ pathname: "/sheets", search: createSearchParams(queryParams).toString() })
+    } else {
+      let replace = true
+      if (lastChangeAt && Date.now() - lastChangeAt >= minQuiteInterval) {
+        replace = false
+      }
+      setQueryParams(queryParams, { replace })
+      lastChangeAt = Date.now()
+    }
   }
 
   const selectAll = event => autoSelect && event.target.select()

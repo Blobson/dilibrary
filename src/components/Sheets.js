@@ -4,7 +4,7 @@ import styled from 'styled-components'
 import Sheet from './Sheet'
 import { CatalogContext } from '../data/CatalogProvider'
 
-const SheetsList = styled.div`
+const SheetsWrap = styled.div`
   width: 100%;
   display: flex;
   align-items: center;
@@ -16,11 +16,11 @@ const Sheets = () => {
   const { filteredSheets } = useContext(CatalogContext)
 
   return (
-    <SheetsList>
+    <SheetsWrap>
       {filteredSheets.map(sheet =>
         <Sheet key={sheet.id} sheet={sheet} />
       )}
-    </SheetsList>
+    </SheetsWrap>
   )
 }
 
