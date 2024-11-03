@@ -14,6 +14,8 @@ const Regards = styled.div`
 `
 
 const HomeWrap = styled.div`
+  line-height: 1.6em;
+
   & > h2 {
     display: flex;
     width: 100%;

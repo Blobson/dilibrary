@@ -16,7 +16,6 @@ const LogoWrap = styled.div`
 `
 
 const Logo = styled.img`
-
 `
 
 const Title = styled.h1`
