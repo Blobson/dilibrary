@@ -90,7 +90,9 @@ const SearchBar = ({ autoFocus = true, autoSelect = true, autoScroll = false }) 
         onFocus={selectAll}
         value={queryParams.get(searchParam) || ""}
       />
-      <SheetsCount>найдено: {filteredSheets.length}</SheetsCount>
+      {location.pathname === "/sheets" &&
+        <SheetsCount>найдено: {filteredSheets.length}</SheetsCount>
+      }
     </SearchWrap>
   )
 }
