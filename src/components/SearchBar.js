@@ -1,6 +1,10 @@
-import React, { useMemo } from 'react'
+import React, { useContext, useEffect, useRef } from 'react'
+import { useSearchParams } from "react-router-dom"
 import styled from 'styled-components'
-import MiniSearch from 'minisearch'
+
+import useAutoFocus from '../common/AutoFocus'
+import useSearchEngine from '../data/SearchEngine'
+import { CatalogContext } from '../data/CatalogProvider'
 
 const SearchWrap = styled.div`
   padding: 1rem;
@@ -30,42 +34,48 @@ const SheetsCount = styled.div`
   font-size: 0.7em;
 `
 
-const miniSearch = new MiniSearch({
-  fields: ['title', 'authors', 'mod', 'categories'],
-  boost: {'title': 2, 'authors': 1.7, 'mod': 1.5}
-})
+const searchParam = "q"
 
-const onFocus = event => event.target.select()
+const SearchBar = ({ autoFocus = true, autoSelect = true, autoScroll = false }) => {
 
-const SearchBar = ({ sheets, foundCount, onSearchFinished }) => {
+  const { sheets, filteredSheets, setFilteredSheets } = useContext(CatalogContext)
+  const searchSheets = useSearchEngine(sheets)
+  const searchInput = useAutoFocus(autoFocus)
+  const wrapRef = useRef()
 
-  const processQuery = useMemo(() => {
-    miniSearch.removeAll()
-    miniSearch.addAll(sheets)
-    const searchSheets = query => {
-      if (query) {
-        const searchResults = miniSearch.search(query, { prefix: true })
-        return searchResults.map(it => sheets.find(sheet => sheet.id === it.id))
-      }
-      return sheets
+  const [queryParams, setQueryParams] = useSearchParams()
+
+  useEffect(() => {
+    const matchingSheets = searchSheets(queryParams.get(searchParam))
+    setFilteredSheets(matchingSheets)
+
+    if (autoScroll && matchingSheets.length > 0) {
+      const rc = wrapRef.current.getBoundingClientRect()
+      window.scrollTo({
+        top: window.scrollY + rc.top,
+        behavior: 'smooth',
+      })
     }
-    return searchSheets
-  }, [sheets])
+
+  }, [queryParams, setFilteredSheets, searchSheets, autoScroll])
 
   const onInputChange = (event) => {
-    const matchingSheets = processQuery(event.target.value)
-    onSearchFinished(matchingSheets)
-}
+    setQueryParams({ [searchParam]: event.target.value })
+  }
+
+  const selectAll = event => autoSelect && event.target.select()
 
   return (
-    <SearchWrap>
+    <SearchWrap ref={wrapRef}>
       <SearchInput
+        ref={searchInput}
         name="sheet-search"
         placeholder="Введите автора, название произведения или категорию"
         onChange={onInputChange}
-        onFocus={onFocus}
+        onFocus={selectAll}
+        value={queryParams.get(searchParam) || ""}
       />
-      <SheetsCount>найдено: {foundCount}</SheetsCount>
+      <SheetsCount>найдено: {filteredSheets.length}</SheetsCount>
     </SearchWrap>
   )
 }

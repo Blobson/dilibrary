@@ -1,6 +1,8 @@
 import React from 'react'
 import styled from 'styled-components'
 
+import { IoMdPricetag as TagIcon } from "react-icons/io"
+
 const SheetName = styled.div`
   margin: 0.2em 0;
   font-weight: 700;
@@ -34,6 +36,13 @@ const SheetCategory = styled.div`
   color: rgba(0, 0, 0, 0.4);
   border-radius: 3px;
   white-space: nowrap;
+  display: flex;
+  align-items: center;
+  vertical-align: middle;
+
+  & > svg {
+    margin-right: 0.1em;
+  }
 `
 
 const SheetPane = styled.div`
@@ -76,6 +85,7 @@ const Sheet = ({ sheet }) => {
       <SheetCategories>
         {sheet.categories.map((category, index) =>
           <SheetCategory key={`${sheet.id}-cat-${index}`}>
+            <TagIcon />
             {category}
           </SheetCategory>
         )}
