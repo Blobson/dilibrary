@@ -5,15 +5,15 @@ import { BrowserRouter } from "react-router-dom"
 import './style/index.scss'
 import './style/fonts/arimo/arimo.css'
 import App from './components/App'
-import CatalogProvider from './data/CatalogProvider'
+import StateProvider from './data/StateProvider'
 
 const root = ReactDOM.createRoot(document.getElementById('root'))
 root.render(
   <React.StrictMode>
     <BrowserRouter>
-      <CatalogProvider>
+      <StateProvider>
         <App />
-      </CatalogProvider>
+      </StateProvider>
     </BrowserRouter>
   </React.StrictMode>
 )

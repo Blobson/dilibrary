@@ -34,7 +34,7 @@ const SheetCategory = styled.div`
   font-weight: 700;
   background-color: rgba(0, 0, 0, 0.07);
   color: rgba(0, 0, 0, 0.4);
-  border-radius: 3px;
+  border-radius: 0.5em;
   white-space: nowrap;
   display: flex;
   align-items: center;
@@ -42,6 +42,8 @@ const SheetCategory = styled.div`
 
   & > svg {
     margin-right: 0.1em;
+    vertical-align: middle;
+    font-size: 1.2em;
   }
 `
 

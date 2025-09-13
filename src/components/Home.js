@@ -1,7 +1,7 @@
 import React, { useContext } from "react"
 import styled from "styled-components"
 
-import { CatalogContext } from '../data/CatalogProvider'
+import { StateContext } from '../data/StateProvider'
 
 const Block = styled.div`
   max-width: 960px;
@@ -45,7 +45,7 @@ const categoryCount = (sheets, categories) => {
 
 const Home = () => {
 
-  const { sheets } = useContext(CatalogContext)
+  const { sheets } = useContext(StateContext)
 
   return (
     <HomeWrap>

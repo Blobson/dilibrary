@@ -2,7 +2,8 @@ import React, { useContext } from 'react'
 import styled from 'styled-components'
 
 import Sheet from './Sheet'
-import { CatalogContext } from '../data/CatalogProvider'
+import { StateContext } from '../data/StateProvider'
+import useSheetSearchParams from '../data/SheetSearchParams'
 
 const SheetsWrap = styled.div`
   width: 100%;
@@ -13,7 +14,9 @@ const SheetsWrap = styled.div`
 `
 
 const Sheets = () => {
-  const { filteredSheets } = useContext(CatalogContext)
+  const { searchSheets } = useContext(StateContext)
+  const { filter, selectedCategories } = useSheetSearchParams()
+  const filteredSheets = searchSheets(filter, selectedCategories)
 
   return (
     <SheetsWrap>

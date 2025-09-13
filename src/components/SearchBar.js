@@ -1,10 +1,11 @@
 import React, { useContext, useEffect, useRef } from 'react'
-import { useLocation, useNavigate, useSearchParams, createSearchParams } from "react-router-dom"
+import { useLocation } from "react-router-dom"
 import styled from 'styled-components'
 
 import useAutoFocus from '../common/AutoFocus'
-import useSearchEngine from '../data/SearchEngine'
-import { CatalogContext } from '../data/CatalogProvider'
+import CategoryList from './CategoryList'
+import { StateContext } from '../data/StateProvider'
+import useSheetSearchParams from '../data/SheetSearchParams'
 
 const SearchWrap = styled.div`
   padding: 1rem;
@@ -34,66 +35,49 @@ const SheetsCount = styled.div`
   font-size: 0.7em;
 `
 
-const searchParam = "q"
-
-let lastChangeAt = null
-const minQuiteInterval = 3000
-
 const SearchBar = ({ autoFocus = true, autoSelect = true, autoScroll = false }) => {
 
-  const { sheets, filteredSheets, setFilteredSheets } = useContext(CatalogContext)
-  const searchSheets = useSearchEngine(sheets)
+  const { searchSheets } = useContext(StateContext)
+  const { filter, selectedCategories, setFilter, toggleCategory } = useSheetSearchParams()
+
+  const filteredSheets = searchSheets(filter, selectedCategories)
   const searchInput = useAutoFocus(autoFocus)
   const wrapRef = useRef()
-  const navigate = useNavigate()
   const location = useLocation()
 
-  const [queryParams, setQueryParams] = useSearchParams()
-
   useEffect(() => {
-    const matchingSheets = searchSheets(queryParams.get(searchParam))
-    setFilteredSheets(matchingSheets)
-
-    if (autoScroll && matchingSheets.length > 0) {
+    if (autoScroll && filteredSheets.length > 0) {
       const rc = wrapRef.current.getBoundingClientRect()
       window.scrollTo({
         top: window.scrollY + rc.top,
         behavior: 'smooth',
       })
     }
-
-  }, [queryParams, setFilteredSheets, searchSheets, autoScroll])
+  }, [filter, selectedCategories, filteredSheets, autoScroll, searchSheets])
 
   const onInputChange = (event) => {
-    const queryParams = { [searchParam]: event.target.value }
-    if (location.pathname !== "/sheets" && event.target.value) {
-      navigate({ pathname: "/sheets", search: createSearchParams(queryParams).toString() })
-    } else {
-      let replace = true
-      if (lastChangeAt && Date.now() - lastChangeAt >= minQuiteInterval) {
-        replace = false
-      }
-      setQueryParams(queryParams, { replace })
-      lastChangeAt = Date.now()
-    }
+    setFilter(event.target.value)
   }
 
   const selectAll = event => autoSelect && event.target.select()
 
   return (
-    <SearchWrap ref={wrapRef}>
-      <SearchInput
-        ref={searchInput}
-        name="sheet-search"
-        placeholder="Введите автора, название произведения или категорию"
-        onChange={onInputChange}
-        onFocus={selectAll}
-        value={queryParams.get(searchParam) || ""}
-      />
-      {location.pathname === "/sheets" &&
-        <SheetsCount>найдено: {filteredSheets.length}</SheetsCount>
-      }
-    </SearchWrap>
+    <>
+      <SearchWrap ref={wrapRef}>
+        <SearchInput
+          ref={searchInput}
+          name="sheet-search"
+          placeholder="Введите автора или название произведения"
+          onChange={onInputChange}
+          onFocus={selectAll}
+          value={filter}
+        />
+        {location.pathname === "/sheets" &&
+          <SheetsCount>найдено: {filteredSheets.length}</SheetsCount>
+        }
+      </SearchWrap>
+      <CategoryList selectedCategories={selectedCategories} toggleCategory={toggleCategory} />
+    </>
   )
 }
 
