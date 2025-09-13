@@ -3,12 +3,11 @@ import initSearchEngine from './SearchEngine'
 export const initialState = {
   sheets: [],
   categories: [],
-  searchSheets: _ => [],
+  searchSheets: _ => [[], {}],
 }
 
 // Actions
 export const INIT_CATALOG = 'init-catalog'
-// export const TOGGLE_CATEGORY = 'toggle-category'
 
 // Reducer
 export const stateReducer = (state, action) => {
@@ -19,27 +18,9 @@ export const stateReducer = (state, action) => {
       return {
         ...state,
         sheets,
-        categories: categories.map(category => ({
-          name: category,
-        })),
-        searchSheets: initSearchEngine(action.payload.sheets),
+        categories: categories,
+        searchSheets: initSearchEngine(sheets, categories),
       };
-
-    // case TOGGLE_CATEGORY:
-    //   const { category, updateSearchParams } = action.payload
-    //   const newState = {
-    //     ...state,
-    //     categories: state.categories.map(c => {
-    //       return c.name !== category ? c : {
-    //         ...c,
-    //         selected: !c.selected
-    //       }
-    //     })
-    //   }
-
-    //   updateSearchParams({ [categoriesParam]: newState.categories.filter(c => c.selected).map(c => c.name) })
-
-    //   return newState
 
     default:
       return state

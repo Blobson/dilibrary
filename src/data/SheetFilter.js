@@ -6,7 +6,7 @@ import { filterParam, categoriesParam } from './SearchEngine'
 let lastChangeAt = null
 const minQuiteInterval = 3000
 
-const useSheetSearchParams = () => {
+const useSheetFilter = (searchSheets) => {
 
   const [searchParams, setSearchParams] = useSearchParams({ [filterParam]: "", [categoriesParam]: [] })
   const navigate = useNavigate()
@@ -46,8 +46,9 @@ const useSheetSearchParams = () => {
 
   const filter = searchParams.get(filterParam) || ""
   const selectedCategories = searchParams.getAll(categoriesParam)
+  const [ filteredSheets, categoryCounters ] = searchSheets(filter, selectedCategories)
 
-  return { filter, selectedCategories, setFilter, toggleCategory }
+  return { filteredSheets, categoryCounters, filter, selectedCategories, setFilter, toggleCategory }
 }
 
-export default useSheetSearchParams
+export default useSheetFilter

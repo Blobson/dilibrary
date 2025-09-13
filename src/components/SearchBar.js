@@ -5,7 +5,7 @@ import styled from 'styled-components'
 import useAutoFocus from '../common/AutoFocus'
 import CategoryList from './CategoryList'
 import { StateContext } from '../data/StateProvider'
-import useSheetSearchParams from '../data/SheetSearchParams'
+import useSheetFilter from '../data/SheetFilter'
 
 const SearchWrap = styled.div`
   padding: 1rem;
@@ -37,10 +37,9 @@ const SheetsCount = styled.div`
 
 const SearchBar = ({ autoFocus = true, autoSelect = true, autoScroll = false }) => {
 
-  const { searchSheets } = useContext(StateContext)
-  const { filter, selectedCategories, setFilter, toggleCategory } = useSheetSearchParams()
+  const { categories, searchSheets } = useContext(StateContext)
+  const { filteredSheets, categoryCounters, filter, selectedCategories, setFilter, toggleCategory } = useSheetFilter(searchSheets)
 
-  const filteredSheets = searchSheets(filter, selectedCategories)
   const searchInput = useAutoFocus(autoFocus)
   const wrapRef = useRef()
   const location = useLocation()
@@ -76,7 +75,12 @@ const SearchBar = ({ autoFocus = true, autoSelect = true, autoScroll = false }) 
           <SheetsCount>найдено: {filteredSheets.length}</SheetsCount>
         }
       </SearchWrap>
-      <CategoryList selectedCategories={selectedCategories} toggleCategory={toggleCategory} />
+      <CategoryList
+        categories={categories}
+        selectedCategories={selectedCategories}
+        toggleCategory={toggleCategory}
+        categoryCounters={categoryCounters}
+      />
     </>
   )
 }

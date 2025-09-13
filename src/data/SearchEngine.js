@@ -16,7 +16,7 @@ const categoriesMatch = (sheet, selectedCategories) => {
   )
 }
 
-const initSearchEngine = sheets => {
+const initSearchEngine = (sheets, categories) => {
   miniSearch.removeAll()
   miniSearch.addAll(sheets)
 
@@ -34,7 +34,12 @@ const initSearchEngine = sheets => {
       matchingSheets = matchingSheets.filter(sheet => categoriesMatch(sheet, selectedCategories))
     }
 
-    return matchingSheets
+    const categoryCounters = categories.reduce((acc, category) => {
+      acc[category] = matchingSheets.filter(it => it.categories.includes(category)).length
+      return acc
+    }, {})
+
+    return [ matchingSheets, categoryCounters ]
   }
 
   return searchSheets

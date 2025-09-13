@@ -1,8 +1,7 @@
-import React, { useContext } from 'react'
+import React from 'react'
 import styled from 'styled-components'
 
 import Category from './Category'
-import { StateContext } from '../data/StateProvider'
 
 const CategoryListWrap = styled.div`
   width: 100%;
@@ -21,19 +20,18 @@ const CategoryListPrompt = styled.div`
   color: #555;
 `
 
-const CategoryList = ({ selectedCategories, toggleCategory }) => {
-  const { categories } = useContext(StateContext)
-
+const CategoryList = ({ categories, selectedCategories, categoryCounters, toggleCategory }) => {
   return (
     <CategoryListWrap>
       <CategoryListPrompt>
         Выберите одну или несколько категорий:
       </CategoryListPrompt>
-      {categories.map(category =>
+      {categories.filter(c => categoryCounters[c] > 0).map(category =>
         <Category
-          key={category.name}
-          name={category.name}
-          selected={selectedCategories.includes(category.name)}
+          key={category}
+          name={category}
+          sheetCount={categoryCounters[category]}
+          selected={selectedCategories.includes(category)}
           toggleCategory={toggleCategory}
         />
       )}

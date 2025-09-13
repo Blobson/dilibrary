@@ -3,7 +3,7 @@ import styled from 'styled-components'
 
 import Sheet from './Sheet'
 import { StateContext } from '../data/StateProvider'
-import useSheetSearchParams from '../data/SheetSearchParams'
+import useSheetFilter from '../data/SheetFilter'
 
 const SheetsWrap = styled.div`
   width: 100%;
@@ -15,8 +15,7 @@ const SheetsWrap = styled.div`
 
 const Sheets = () => {
   const { searchSheets } = useContext(StateContext)
-  const { filter, selectedCategories } = useSheetSearchParams()
-  const filteredSheets = searchSheets(filter, selectedCategories)
+  const { filteredSheets } = useSheetFilter(searchSheets)
 
   return (
     <SheetsWrap>
